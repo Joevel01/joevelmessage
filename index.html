@@ -10,39 +10,59 @@
       margin: 0;
       padding: 0;
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      color: #333;
       height: 100vh;
       overflow: hidden;
+      background: pink;
+      color: #fff;
+    }
+
+    /* Floating hearts */
+    .heart {
+      position: fixed;
+      bottom: -20px;
+      font-size: 24px;
+      color: #ff4d88;
+      animation: floatUp 6s linear infinite;
+      opacity: 0.8;
+    }
+
+    @keyframes floatUp {
+      0% { transform: translateY(0) scale(1); opacity: 1; }
+      100% { transform: translateY(-100vh) scale(1.5); opacity: 0; }
+    }
+
+    /* Page transitions */
+    @keyframes fadeSlideIn {
+      0% { opacity: 0; transform: translateY(30px); }
+      100% { opacity: 1; transform: translateY(0); }
     }
 
     .page {
       display: none;
       position: absolute;
-      top: 0;
-      left: 0;
-      height: 100vh;
-      width: 100vw;
+      top: 0; left: 0;
+      height: 100vh; width: 100vw;
       flex-direction: column;
       justify-content: center;
       align-items: center;
       text-align: center;
       padding: 2rem;
       box-sizing: border-box;
-      color: white;
+      opacity: 0;
     }
 
     .active {
       display: flex;
+      animation: fadeSlideIn 0.8s ease forwards;
     }
 
     video.bg-video {
       position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
       object-fit: cover;
       z-index: -1;
+      opacity: 0.4;
     }
 
     button {
@@ -55,10 +75,7 @@
       transition: background 0.3s ease;
       margin-top: 1.5rem;
     }
-
-    button:hover {
-      background: #ffe6f0;
-    }
+    button:hover { background: #ffe6f0; }
 
     .choice-btn {
       margin: 0.5rem;
@@ -76,6 +93,18 @@
       margin-top: 2rem;
       display: inline-block;
     }
+
+    /* Sparkle burst */
+    .sparkle {
+      position: fixed;
+      font-size: 20px;
+      pointer-events: none;
+      animation: sparkleAnim 1s forwards;
+    }
+    @keyframes sparkleAnim {
+      0% { opacity: 1; transform: scale(1); }
+      100% { opacity: 0; transform: translateY(-50px) scale(0); }
+    }
   </style>
 </head>
 <body>
@@ -84,23 +113,23 @@
     <source src="https://dl.dropboxusercontent.com/scl/fi/76km34rbmopdk6lm2uy3m/pangarap-ko-y-ikaw.mp4?rlkey=af99bcsnmt3l5w0jm3iwz06l6&st=4pn5vs4n&dl=0" type="video/mp4">
   </video>
 
-  <!-- Page 1: Greeting -->
+  <!-- Page 1 -->
   <div class="page active" id="page1">
     <h1>Hi Nicole 💖</h1>
-    <p>Basta message to para sayo...</p>
+    <p>Basta message to para sayo hehe</p>
     <button onclick="showPage(2)">Next</button>
   </div>
 
-  <!-- Page 2: Yes/No -->
+  <!-- Page 2 -->
   <div class="page" id="page2">
     <h2>Would you like to read it? 👀</h2>
     <div>
-      <button class="choice-btn" onclick="showPage(3)">YES</button>
+      <button class="choice-btn" id="yesBtn">YES</button>
       <button id="noBtn" class="choice-btn">NO</button>
     </div>
   </div>
 
-  <!-- Page 3: Message -->
+  <!-- Page 3 -->
   <div class="page" id="page3">
     <h2>Message from Joevel</h2>
     <p>
@@ -121,7 +150,7 @@
       document.getElementById('page' + pageNum).classList.add('active');
     }
 
-    // playful NO button
+    // NO button playful behavior
     const noBtn = document.getElementById("noBtn");
     let noClicks = 0;
     noBtn.addEventListener("click", () => {
@@ -134,6 +163,34 @@
       } else {
         alert("No ka pa rin? Sure ka? 🤭");
       }
+    });
+
+    // Floating hearts
+    function createHeart() {
+      const heart = document.createElement("div");
+      heart.classList.add("heart");
+      heart.textContent = "💖";
+      heart.style.left = Math.random() * 100 + "vw";
+      heart.style.fontSize = Math.random() * 20 + 15 + "px";
+      document.body.appendChild(heart);
+      setTimeout(() => heart.remove(), 6000);
+    }
+    setInterval(createHeart, 500);
+
+    // Sparkle burst on YES
+    const yesBtn = document.getElementById("yesBtn");
+    yesBtn.addEventListener("click", (e) => {
+      for (let i = 0; i < 15; i++) {
+        const sparkle = document.createElement("div");
+        sparkle.classList.add("sparkle");
+        sparkle.textContent = "✨";
+        sparkle.style.left = e.clientX + (Math.random() * 100 - 50) + "px";
+        sparkle.style.top = e.clientY + (Math.random() * 100 - 50) + "px";
+        sparkle.style.fontSize = (Math.random() * 10 + 10) + "px";
+        document.body.appendChild(sparkle);
+        setTimeout(() => sparkle.remove(), 1000);
+      }
+      setTimeout(() => showPage(3), 800);
     });
   </script>
 </body>
