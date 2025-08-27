@@ -3,172 +3,138 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Message for Nicole</title>
   <style>
-    :root {
-      --overlay: rgba(0,0,0,.38);
-      --accent: #ff6699;
-      --accent-dark: #ff3d80;
-    }
-
-    html, body { height: 100%; }
-    body {
+    body, html {
       margin: 0;
-      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-      color: #fff;
-      background:
-        linear-gradient(0deg, var(--overlay), var(--overlay)),
-        url('https://images.unsplash.com/photo-1501973801540-537f08ccae7b?q=80&w=1600&auto=format&fit=crop') center / cover no-repeat fixed;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      color: #333;
+      height: 100vh;
       overflow: hidden;
     }
 
-    /* Generic page container */
     .page {
+      display: none;
       position: absolute;
-      inset: 0;
-      padding: 2rem 1.25rem 5rem;
-      box-sizing: border-box;
-      display: none; /* hide by default */
+      top: 0;
+      left: 0;
+      height: 100vh;
+      width: 100vw;
+      flex-direction: column;
       justify-content: center;
       align-items: center;
-      flex-direction: column;
       text-align: center;
-      overflow-y: auto; /* allow scroll if text is long */
-      -webkit-overflow-scrolling: touch;
-      backdrop-filter: saturate(110%) contrast(105%);
+      padding: 2rem;
+      box-sizing: border-box;
+      color: white;
     }
-    .page.active { display: flex; }
 
-    .content { max-width: 760px; }
+    .active {
+      display: flex;
+    }
 
-    h1, h2 { margin: 0 0 .75rem; line-height: 1.15; }
-    p { margin: 0 0 1rem; font-size: 1.05rem; }
+    video.bg-video {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: -1;
+    }
 
-    .btn {
+    button {
+      padding: 1rem 2rem;
       background: #fff;
-      color: #222;
       border: none;
-      border-radius: 12px;
-      padding: .9rem 1.4rem;
-      font-size: 1.05rem;
-      font-weight: 600;
+      border-radius: 8px;
+      font-size: 1rem;
       cursor: pointer;
-      transition: transform .08s ease, box-shadow .2s ease, background .2s ease, color .2s ease;
-      box-shadow: 0 8px 20px rgba(0,0,0,.18);
-      margin-top: 1rem;
+      transition: background 0.3s ease;
+      margin-top: 1.5rem;
     }
-    .btn:active { transform: translateY(1px); }
 
-    .btn-primary { background: var(--accent); color: #fff; }
-    .btn-primary:hover { background: var(--accent-dark); }
+    button:hover {
+      background: #ffe6f0;
+    }
 
-    .cta-row { display: flex; gap: .75rem; flex-wrap: wrap; justify-content: center; }
+    .choice-btn {
+      margin: 0.5rem;
+      background-color: #ff4d88;
+      color: white;
+    }
 
-    /* Make NO button able to run around inside page 2 */
-    #page2 { position: relative; }
-    #noBtn { position: relative; } /* becomes absolute when it starts running */
-
-    /* Subtle reveal effect for final page */
-    #page3 { opacity: 0; transform: scale(.985); transition: opacity .6s ease, transform .6s ease; }
-    #page3.reveal { opacity: 1; transform: scale(1); }
-
-    a.reply {
+    .reply-button {
       text-decoration: none;
-      background: var(--accent);
-      color: #fff;
-      padding: .95rem 1.4rem;
-      border-radius: 12px;
-      font-weight: 700;
+      color: white;
+      background-color: #ff4d88;
+      padding: 1rem 2rem;
+      border-radius: 10px;
+      font-weight: bold;
+      margin-top: 2rem;
       display: inline-block;
-      margin-top: 1.25rem;
-      box-shadow: 0 8px 20px rgba(0,0,0,.18);
-    }
-    a.reply:hover { background: var(--accent-dark); }
-
-    @media (max-width: 480px) {
-      h1 { font-size: 1.6rem; }
-      h2 { font-size: 1.3rem; }
-      p { font-size: 1rem; }
     }
   </style>
 </head>
 <body>
-  <!-- Page 1: Greeting -->
-  <section id="page1" class="page active">
-    <div class="content">
-      <h1>Hi Nicole 🌅💖</h1>
-      <p>May gusto sana akong sabihin sa'yo…</p>
-      <button class="btn btn-primary" onclick="goTo('page2')">Next</button>
-    </div>
-  </section>
+  <!-- Background video -->
+  <video class="bg-video" autoplay muted loop playsinline>
+    <source src="https://dl.dropboxusercontent.com/scl/fi/76km34rbmopdk6lm2uy3m/pangarap-ko-y-ikaw.mp4?rlkey=af99bcsnmt3l5w0jm3iwz06l6&st=4pn5vs4n&dl=0" type="video/mp4">
+  </video>
 
-  <!-- Page 2: Yes / No -->
-  <section id="page2" class="page">
-    <div class="content">
-      <h2>Would you like to read it? 🤔</h2>
-      <div class="cta-row">
-        <button class="btn btn-primary" onclick="sayYes()">YES</button>
-        <button id="noBtn" class="btn" onclick="runNo()">NO</button>
-      </div>
+  <!-- Page 1: Greeting -->
+  <div class="page active" id="page1">
+    <h1>Hi Nicole 💖</h1>
+    <p>Basta message to para sayo...</p>
+    <button onclick="showPage(2)">Next</button>
+  </div>
+
+  <!-- Page 2: Yes/No -->
+  <div class="page" id="page2">
+    <h2>Would you like to read it? 👀</h2>
+    <div>
+      <button class="choice-btn" onclick="showPage(3)">YES</button>
+      <button id="noBtn" class="choice-btn">NO</button>
     </div>
-  </section>
+  </div>
 
   <!-- Page 3: Message -->
-  <section id="page3" class="page">
-    <div class="content">
-      <h2>Message from Joevel 💌</h2>
-      <p>
-        Hello Nicole, pasensya kana if may pa link link pa akong nalalaman hehehe.<br><br>
-        Since matagal tagal narin naman tayo nag-uusap, sinulat ko yung message na 'to para sabihin na yung mga di ko masabi kasi nauunahan lagi ng kaba 🥲<br><br>
-        After a year and months, nagkaroon din ako ng lakas ng loob na mag chat sayo. Tagal ko ring pinag-isipan kung talagang magme-message ako, kasi kabado talaga as in 🥹 HAHAHHA.<br><br>
-        Kaya ngayon ko sasabihin na <strong>Crush kita, Nicole</strong>. Tinake ko na yung risks kahit alam ko na yung pwedeng kahihinatnan, pero at least I tried diba hehe. Matagal ko rin 'to pinag-isipan kaya I'll respect your response 100% 🥹🥺✨<br><br>
-        — <strong>Joevel</strong>
-      </p>
-      <a class="reply" href="https://m.me/dichosa.joevel" target="_blank">Reply 💬</a>
-    </div>
-  </section>
+  <div class="page" id="page3">
+    <h2>Message from Joevel</h2>
+    <p>
+      Hello Nicole, pasensya kana if may pa link link pa akong nalalaman hehehe.<br><br>
+      Since matagal tagal narin naman tayo nag uusap, sinulat ko yung message na to para sabihin na yung mga diko masabi kasi nuunahan lagi ng kaba🥲<br><br>
+      After a year and months nagkaroon din ako ng lakas ng loob na mag chat sayo. Tagal din ako nag-isip if talagang magmi-message ako, kasi kabado talaga as in 🥹 nag message pa ako during valentine's day tas late pa HAHAHHA.<br><br>
+      Kaya ngayon ko sasabihin na <strong>Crush kita, Nicole</strong>. 
+      Tinake ko na yung risks kahit kabado but at least I try diba hehe. 
+      Matagal ko din to pinag-isipan kaya I'll respect your response hundred percent 🥹🥺✨<br><br>
+      <strong>Joevel</strong>
+    </p>
+    <a class="reply-button" href="https://m.me/dichosa.joevel" target="_blank">Reply 💬</a>
+  </div>
 
   <script>
-    const pages = ['page1','page2','page3'];
-    function goTo(id){
-      pages.forEach(pid=>document.getElementById(pid).classList.remove('active','reveal'));
-      const el = document.getElementById(id);
-      el.classList.add('active');
+    function showPage(pageNum) {
+      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+      document.getElementById('page' + pageNum).classList.add('active');
     }
 
-    let noMoves = 0;
-    function runNo(){
-      const btn = document.getElementById('noBtn');
-      const container = document.getElementById('page2');
-      noMoves++;
-
-      // Make it absolute so it can move around inside page2
-      btn.style.position = 'absolute';
-
-      // Compute a safe random position inside the container
-      const pad = 16; // padding from edges
-      const maxX = Math.max(0, container.clientWidth - btn.offsetWidth - pad*2);
-      const maxY = Math.max(0, container.clientHeight - btn.offsetHeight - pad*2);
-      const x = Math.random() * maxX + pad;
-      const y = Math.random() * maxY + pad;
-
-      btn.style.left = x + 'px';
-      btn.style.top = y + 'px';
-
-      if(noMoves >= 10){
-        alert('Sige na 😆 Please press YES!');
+    // playful NO button
+    const noBtn = document.getElementById("noBtn");
+    let noClicks = 0;
+    noBtn.addEventListener("click", () => {
+      noClicks++;
+      if (noClicks < 10) {
+        noBtn.style.position = "absolute";
+        noBtn.style.top = Math.random() * 80 + "%";
+        noBtn.style.left = Math.random() * 80 + "%";
+        noBtn.textContent = "NO 😆";
+      } else {
+        alert("No ka pa rin? Sure ka? 🤭");
       }
-    }
-
-    function sayYes(){
-      goTo('page3');
-      // small delay so transition can apply
-      requestAnimationFrame(()=>{
-        const final = document.getElementById('page3');
-        final.classList.add('reveal');
-      });
-    }
+    });
   </script>
 </body>
 </html>
